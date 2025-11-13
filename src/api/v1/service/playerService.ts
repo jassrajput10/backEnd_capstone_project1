@@ -78,3 +78,36 @@ export const getPlayerById = async (id: string): Promise<player> => {
 
     return structuredClone(createdPlayer);
 };
+
+
+/**
+ * Updates an existing player info
+ * @param id - The ID of the player to update
+ * @param playerData - The fields to update
+ * @returns The updated player data
+ * @throws Error if player with given ID is not found
+ */
+export const updatePlayer = async (
+    id: string,
+    playerData: Pick<player, "name" | "position" | "jerseyNumber">
+): Promise<player> => {
+    // check if the item exists before updating
+    const Player: player = await getPlayerById(id);
+    if (!Player) {
+        throw new Error(`player with ID ${id} not found`);
+    }
+
+    const updatePlayer: player = {
+        ...Player,
+    };
+
+
+    if (playerData.name !== undefined) updatePlayer.name = playerData.name;
+    if (playerData.position !== undefined)
+        updatePlayer.position = playerData.position;
+    if (playerData.jerseyNumber !== undefined) updatePlayer.jerseyNumber = playerData.jerseyNumber;
+
+    await updateDocument<player>(COLLECTION, id, updatePlayer);
+
+    return structuredClone(updatePlayer);
+};
