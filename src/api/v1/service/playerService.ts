@@ -57,3 +57,24 @@ export const createPlayer = async (playerData : {
 
     return structuredClone({ id: playerId, ...newPlayer} as player);
 };
+
+/**
+ * Retrieves a single player info by ID from the database
+ * @param id - This ID of the item to retrieve
+ * @returns The player if found
+ */
+export const getPlayerById = async (id: string): Promise<player> => {
+    const doc: DocumentSnapshot | null = await getDocumentById(COLLECTION, id);
+
+    if (!doc) {
+        throw new Error(`Player with ID ${id} not found`);
+    }
+
+    const data: DocumentData | undefined = doc.data();
+    const createdPlayer: player = {
+        id: doc.id,
+        ...data,
+    } as player;
+
+    return structuredClone(createdPlayer);
+};
