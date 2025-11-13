@@ -111,3 +111,18 @@ export const updatePlayer = async (
 
     return structuredClone(updatePlayer);
 };
+
+/**
+ * Deletes or remove a player from team
+ * @param id - The ID of the player to delete
+ * @throws Error if player with given ID is not found
+ */
+export const deletePlayer = async (id: string): Promise<void> => {
+    // check if the player exists before deleting
+    const Player: player = await getPlayerById(id);
+    if (!Player) {
+        throw new Error(`Player with ID ${id} not found`);
+    }
+
+    await deleteDocument(COLLECTION, id);
+};
