@@ -5,5 +5,6 @@ export interface tournament {
     id: string,
     tournamentName: string,
     tournamentPosition: string,
-    upcomingTournamnet: string
+    upcomingTournamnet: string,
+    tournamentStart: Date
 }

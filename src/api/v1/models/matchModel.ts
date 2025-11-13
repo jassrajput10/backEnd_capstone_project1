@@ -6,5 +6,6 @@ export interface matches {
     currentGame: string,
 	upcomingMatch: string,
     location: string,
-    formation: string
+    formation: string,
+    matchDate: Date
 }
