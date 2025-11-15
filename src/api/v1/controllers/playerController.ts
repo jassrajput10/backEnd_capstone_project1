@@ -54,3 +54,37 @@ export const createPlayer = async (
         next(error);
     }
 };
+
+/**
+ * Manages requests and reponses to update player
+ * @param req - The express Request
+ * @param res  - The express Response
+ * @param next - The express middleware chaining function
+ */
+export const updatePlayer = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    try {
+        // const id: string = req.params.id;
+        const { id } = req.params;
+
+        // Extract update fields
+        const { name, position, jerseyNumber } = req.body;
+
+        // create the update item object with the fields to be updated
+        const updatePlayer: player = await playerService.updatePlayer(id, {
+            name,
+            position,
+            jerseyNumber,
+        });
+
+        res.status(HTTP_STATUS.OK).json(
+            successResponse(updatePlayer, "player updated successfully")
+        );
+    } catch (error: unknown) {
+        next(error);
+    }
+};
+
