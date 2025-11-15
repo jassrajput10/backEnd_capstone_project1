@@ -2,6 +2,8 @@
 import express, { Express } from "express";
 import morgan from "morgan";
 
+import playerRoutes from "./api/v1/routes/playerRoutes";
+
 // initialize the express application
 const app: Express = express();
 
@@ -41,7 +43,8 @@ app.get("/api/v1/health", (req, res) => {
     res.json(healthData);
 });
 
-
+// "/api/v1/players" will prefix all player routes
+app.use("/api/v1/players", playerRoutes);
 
 
 export default app;
