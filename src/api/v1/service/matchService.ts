@@ -66,3 +66,65 @@ export const createMatch = async (matchData: {
     return structuredClone({ id: matchId, ...newMatch } as matches);
 };
 
+/**
+ * Retrieves a single match by ID
+ * @param id - The ID of the match to retrieve
+ * @returns The match data if found
+ */
+export const getMatchById = async (id: string): Promise<matches> => {
+    const doc: DocumentSnapshot | null = await getDocumentById(COLLECTION, id);
+
+    if (!doc) {
+        throw new Error(`Match with ID ${id} not found`);
+    }
+
+    const data: DocumentData | undefined = doc.data();
+
+    const matchDetails: matches = {
+        id: doc.id,
+        ...data
+    } as matches;
+
+    return structuredClone(matchDetails);
+};
+
+/**
+ * Updates an existing match
+ * @param id - The ID of the match to update
+ * @param matchData - The fields to update
+ * @returns The updated match data
+ */
+export const updateMatch = async (
+    id: string,
+    matchData: Partial<Pick<matches, "currentGame" | "upcomingMatch" | "location" | "formation">>
+): Promise<matches> => {
+    const Match: matches = await getMatchById(id);
+
+    if (!Match) {
+        throw new Error(`Match with ID ${id} not found`);
+    }
+
+    const updatedMatch: matches = {
+        ...Match,
+        ...matchData,
+    };
+
+    await updateDocument<matches>(COLLECTION, id, updatedMatch);
+
+    return structuredClone(updatedMatch);
+};
+
+/**
+ * Deletes a match from the system
+ * @param id - The ID of the match to delete
+ * @throws Error if match with given ID does not exist
+ */
+export const deleteMatch = async (id: string): Promise<void> => {
+    const Match: matches = await getMatchById(id);
+
+    if (!Match) {
+        throw new Error(`Match with ID ${id} not found`);
+    }
+
+    await deleteDocument(COLLECTION, id);
+};
