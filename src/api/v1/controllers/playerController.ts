@@ -88,3 +88,26 @@ export const updatePlayer = async (
     }
 };
 
+/**
+ * Manages requests and reponses to delete player
+ * @param req - The express Request
+ * @param res  - The express Response
+ * @param next - The express middleware chaining function
+ */
+export const deletePlayer = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    try {
+        const id: string = req.params.id;
+
+        await playerService.deletePlayer(id);
+        res.status(HTTP_STATUS.OK).json(
+            successResponse("Player successfully deleted")
+        );
+    } catch (error: unknown) {
+        next(error);
+    }
+};
+
