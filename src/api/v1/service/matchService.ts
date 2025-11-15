@@ -41,3 +41,28 @@ export const getAllMatches = async (): Promise<matches[]> => {
         throw error;
     }
 };
+
+/**
+ * Creates a new match entry
+ * @param matchData - The data for the new match
+ * @returns The created match with generated ID
+ */
+export const createMatch = async (matchData: {
+    currentGame: string;
+    upcomingMatch: string;
+    location: string;
+    formation: string;
+}): Promise<matches> => {
+
+    const dateNow = new Date();
+
+    const newMatch: Partial<matches> = {
+        ...matchData,
+        matchDate: dateNow,
+    };
+
+    const matchId: string = await createDocument<matches>(COLLECTION, newMatch);
+
+    return structuredClone({ id: matchId, ...newMatch } as matches);
+};
+
