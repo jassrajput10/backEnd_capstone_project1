@@ -4,6 +4,7 @@ import morgan from "morgan";
 
 import playerRoutes from "./api/v1/routes/playerRoutes";
 import matchRoutes from "./api/v1/routes/matchRoutes"
+import tournamentRoutes from "./api/v1/routes/tournamentRoutes"
 
 // initialize the express application
 const app: Express = express();
@@ -48,5 +49,7 @@ app.get("/api/v1/health", (req, res) => {
 app.use("/api/v1/players", playerRoutes);
 // "/api/v1/matches" will prefix all match routes
 app.use("/api/v1/matches", matchRoutes);
+// "/api/v1/tournaments" will prefix all match routes
+app.use("/api/v1/tournaments", tournamentRoutes);
 
 export default app;

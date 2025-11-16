@@ -104,7 +104,7 @@ export const deletePlayer = async (
 
         await playerService.deletePlayer(id);
         res.status(HTTP_STATUS.OK).json(
-            successResponse("Player successfully deleted")
+            successResponse(null, "Player successfully deleted")
         );
     } catch (error: unknown) {
         next(error);
