@@ -109,6 +109,18 @@ export const updateMatch = async (
         ...matchData,
     };
 
+    if (matchData.currentGame !== undefined)
+        updatedMatch.currentGame = matchData.currentGame;
+
+    if (matchData.upcomingMatch !== undefined)
+        updatedMatch.upcomingMatch = matchData.upcomingMatch;
+
+    if (matchData.location !== undefined)
+        updatedMatch.location = matchData.location;
+
+    if (matchData.formation !== undefined)
+        updatedMatch.formation = matchData.formation;
+
     await updateDocument<matches>(COLLECTION, id, updatedMatch);
 
     return structuredClone(updatedMatch);
