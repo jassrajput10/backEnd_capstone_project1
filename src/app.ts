@@ -1,6 +1,7 @@
 // import the express application and type definition
 import express, { Express } from "express";
 import morgan from "morgan";
+import setupSwagger from "../config/swagger";
 
 import playerRoutes from "./api/v1/routes/playerRoutes";
 import matchRoutes from "./api/v1/routes/matchRoutes"
@@ -44,6 +45,9 @@ app.get("/api/v1/health", (req, res) => {
 
     res.json(healthData);
 });
+
+// Setup Swagger
+setupSwagger(app);
 
 // "/api/v1/players" will prefix all player routes
 app.use("/api/v1/players", playerRoutes);
