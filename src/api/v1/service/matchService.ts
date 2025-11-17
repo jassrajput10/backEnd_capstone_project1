@@ -3,9 +3,7 @@ import {
     DocumentData,
     DocumentSnapshot,
 } from "firebase-admin/firestore";
-
 import { matches } from "../models/matchModel";
-
 import {
     createDocument,
     getDocuments,
