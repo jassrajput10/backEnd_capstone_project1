@@ -1,5 +1,8 @@
 import express, { Router } from "express";
 import * as tournamentController from "../controllers/tournamentController";
+import authenticate  from "../middleware/authenticate";
+import { tournamentSchemas } from "../validation/tournamentValidation";
+import { validateRequest } from "../middleware/validate";
 
 const router: Router = express.Router();
 
@@ -45,7 +48,12 @@ router.get("/", tournamentController.getAllTournaments);
  *       201:
  *         description: Tournament created successfully
  */
-router.post("/", tournamentController.createTournament);
+router.post(
+    "/", 
+    authenticate,
+    validateRequest(tournamentSchemas.create),
+    tournamentController.createTournament
+);
 /**
  * @openapi
  * /api/v1/tournaments/{id}:
@@ -78,7 +86,11 @@ router.post("/", tournamentController.createTournament);
  *       404:
  *         description: Tournament not found
  */
-router.put("/:id", tournamentController.updateTournament);
+router.put(
+    "/:id", 
+    authenticate,
+    validateRequest(tournamentSchemas.update),
+    tournamentController.updateTournament);
 /**
  * @openapi
  * /api/v1/tournaments/{id}:
@@ -98,6 +110,10 @@ router.put("/:id", tournamentController.updateTournament);
  *       404:
  *         description: Tournament not found
  */
-router.delete("/:id", tournamentController.deleteTournament);
+router.delete(
+    "/:id", 
+    authenticate,
+    tournamentController.deleteTournament
+);
 
 export default router;
