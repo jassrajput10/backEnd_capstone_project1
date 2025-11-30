@@ -32,11 +32,7 @@ export const matchSchemas = {
                 "string.empty": "Formation cannot be empty",
             }),
 
-            // Joi validation for matchDate
-            matchDate: Joi.date().required().messages({
-                "any.required": "Match Date is required",
-                "date.base": "Match Date must be a valid date",
-            }),
+            
         }),
     },
 
@@ -61,9 +57,7 @@ export const matchSchemas = {
             formation: Joi.string().optional().messages({
                 "string.empty": "Formation cannot be empty",
             }),
-            matchDate: Joi.date().optional().messages({
-                "date.base": "Match Date must be a valid date",
-            }),
+           
         }),
     },
 

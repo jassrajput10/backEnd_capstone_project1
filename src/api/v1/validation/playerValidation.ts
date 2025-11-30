@@ -26,11 +26,7 @@ export const playerSchemas = {
                 "string.empty": "Jersey Number cannot be empty",
             }),
 
-            // Joi validation for registrationId
-            registrationId: Joi.date().required().messages({
-                "any.required": "Registration Date is required",
-                "date.base": "Registration Date must be a valid date",
-            }),
+            
         }),
     },
 
@@ -52,9 +48,7 @@ export const playerSchemas = {
             jerseyNumber: Joi.string().optional().messages({
                 "string.empty": "Jersey Number cannot be empty",
             }),
-            registrationId: Joi.date().optional().messages({
-                "date.base": "Registration Date must be a valid date",
-            }),
+           
         }),
     },
 

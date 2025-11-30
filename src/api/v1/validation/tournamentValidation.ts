@@ -26,11 +26,7 @@ export const tournamentSchemas = {
                 "string.empty": "Upcoming Tournament cannot be empty",
             }),
 
-            // Joi validation for tournamentStart
-            tournamentStart: Joi.date().required().messages({
-                "any.required": "Tournament Start Date is required",
-                "date.base": "Tournament Start Date must be a valid date",
-            }),
+            
         }),
     },
 
@@ -52,9 +48,7 @@ export const tournamentSchemas = {
             upcomingTournamnet: Joi.string().optional().messages({
                 "string.empty": "Upcoming Tournament cannot be empty",
             }),
-            tournamentStart: Joi.date().optional().messages({
-                "date.base": "Tournament Start Date must be a valid date",
-            }),
+           
         }),
     },
 
