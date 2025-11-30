@@ -3,6 +3,8 @@ import * as matchController from "../controllers/matchcontroller";
 import authenticate  from "../middleware/authenticate";
 import { matchSchemas } from "../validation/matchValidation";
 import { validateRequest } from "../middleware/validate";
+import isAuthorized from "../middleware/authorize";
+import { AuthorizationOptions } from "../models/authorizationOptions";
 
 const router: Router = express.Router();
 
@@ -51,6 +53,7 @@ router.get("/", matchController.getAllMatches);
 router.post(
     "/", 
     authenticate,
+    isAuthorized({ hasRole: ["admin", "manager"] } as AuthorizationOptions),
     validateRequest(matchSchemas.create),
     matchController.createMatch
 );
@@ -91,6 +94,7 @@ router.post(
 router.put(
     "/:id", 
     authenticate,
+    isAuthorized({ hasRole: ["admin", "manager"] } as AuthorizationOptions),
     validateRequest(matchSchemas.update),
     matchController.updateMatch
 );
@@ -116,6 +120,7 @@ router.put(
 router.delete(
     "/:id", 
     authenticate,
+    isAuthorized({ hasRole: ["admin", "manager"] } as AuthorizationOptions),
     matchController.deleteMatch);
 
 export default router;

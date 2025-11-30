@@ -3,7 +3,8 @@ import * as playerController from "../controllers/playerController";
 import authenticate  from "../middleware/authenticate";
 import { playerSchemas } from "../validation/playerValidation";
 import { validateRequest } from "../middleware/validate";
-
+import isAuthorized from "../middleware/authorize";
+import { AuthorizationOptions } from "../models/authorizationOptions";
 
 const router: Router = express.Router();
 
@@ -53,6 +54,7 @@ router.get("/", playerController.getAllPlayers);
 router.post(
     "/",
     authenticate,
+    isAuthorized({ hasRole: ["admin", "manager"] } as AuthorizationOptions),
     validateRequest(playerSchemas.create),
     playerController.createPlayer
 );
@@ -91,6 +93,7 @@ router.post(
 router.put(
     "/:id", 
     authenticate,
+    isAuthorized({ hasRole: ["admin", "manager"] } as AuthorizationOptions),
     validateRequest(playerSchemas.update),
     playerController.updatePlayer
 );
@@ -116,6 +119,7 @@ router.put(
 router.delete(
     "/:id", 
     authenticate,
+    isAuthorized({ hasRole: ["admin", "manager"] } as AuthorizationOptions),
     playerController.deletePlayer);
 
 export default router;
