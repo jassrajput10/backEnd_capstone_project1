@@ -1,6 +1,8 @@
 // import the express application and type definition
 import express, { Express } from "express";
 import dotenv from "dotenv";
+import helmet from "helmet";
+import cors from "cors";
 
 dotenv.config();
 
@@ -17,6 +19,8 @@ import {
     errorLogger,
     consoleLogger,
 } from "./api/v1/middleware/logger";
+import { getHelmetConfig } from "../config/helmetConfig";
+import { getCorsConfig } from "../config/corsConfig";
 
 
 // initialize the express application
@@ -31,6 +35,12 @@ interface HealthCheckResponse {
     version: string;
 }
 // Middleware START
+// Apply basic Helmet security
+app.use(helmet());
+app.use(helmet(getHelmetConfig()));
+app.use(cors());
+app.use(cors(getCorsConfig()));
+
 app.use(accessLogger);
 app.use(errorLogger);
 app.use(consoleLogger);
