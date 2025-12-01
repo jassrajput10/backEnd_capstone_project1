@@ -1,0 +1,659 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Task Management API Documentation",
+    "version": "1.0.0",
+    "description": "This is the API documentation for the Task Management application."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/api/v1",
+      "description": "Local server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "Match": {
+        "type": "object",
+        "required": [
+          "id",
+          "currentGame",
+          "upcomingMatch",
+          "location",
+          "formation",
+          "matchDate"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the match",
+            "example": "match1"
+          },
+          "currentGame": {
+            "type": "string",
+            "description": "The currently active or ongoing game",
+            "example": "barca vs madrid"
+          },
+          "upcomingMatch": {
+            "type": "string",
+            "description": "The next scheduled match",
+            "example": "barca vs bayern"
+          },
+          "location": {
+            "type": "string",
+            "description": "Venue where the match will take place",
+            "example": "camp nou"
+          },
+          "formation": {
+            "type": "string",
+            "description": "Team formation strategy or lineup",
+            "example": "4-3-3"
+          },
+          "matchDate": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time when the match is scheduled",
+            "example": "2025-01-15T18:30:00.000Z"
+          }
+        }
+      },
+      "Player": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "position",
+          "jerseyNumber",
+          "registrationId"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the player",
+            "example": "player_001"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the player",
+            "example": "Jas"
+          },
+          "position": {
+            "type": "string",
+            "description": "The role or field position the player plays",
+            "example": "Forward"
+          },
+          "jerseyNumber": {
+            "type": "string",
+            "description": "Jersey number assigned to the player",
+            "example": "10"
+          },
+          "registrationId": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time when the player was registered",
+            "example": "2025-01-01T12:00:00.000Z"
+          }
+        }
+      },
+      "Tournament": {
+        "type": "object",
+        "required": [
+          "id",
+          "tournamentName",
+          "tournamentPosition",
+          "upcomingTournamnet",
+          "tournamentStart"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the tournament",
+            "example": "tournament_001"
+          },
+          "tournamentName": {
+            "type": "string",
+            "description": "Name of the tournament",
+            "example": "Champions Cup"
+          },
+          "tournamentPosition": {
+            "type": "string",
+            "description": "Tournament ranking or position",
+            "example": "Semi-Final"
+          },
+          "upcomingTournamnet": {
+            "type": "string",
+            "description": "The next scheduled tournament",
+            "example": "Winter Cup"
+          },
+          "tournamentStart": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time when the tournament begins",
+            "example": "2025-02-10T10:00:00.000Z"
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/v1/matches": {
+      "get": {
+        "summary": "Retrieves a list of matches",
+        "tags": [
+          "Matches"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of matches",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Match"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new match",
+        "tags": [
+          "Matches"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "currentGame",
+                  "upcomingMatch",
+                  "location",
+                  "formation"
+                ],
+                "properties": {
+                  "currentGame": {
+                    "type": "string",
+                    "example": "Game A"
+                  },
+                  "upcomingMatch": {
+                    "type": "string",
+                    "example": "Game B"
+                  },
+                  "location": {
+                    "type": "string",
+                    "example": "Stadium 1"
+                  },
+                  "formation": {
+                    "type": "string",
+                    "example": "4-3-3"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Match created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Match"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data"
+          }
+        }
+      }
+    },
+    "/api/v1/matches/{id}": {
+      "put": {
+        "summary": "Update an existing match",
+        "tags": [
+          "Matches"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Match ID to update"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "currentGame": {
+                    "type": "string"
+                  },
+                  "upcomingMatch": {
+                    "type": "string"
+                  },
+                  "location": {
+                    "type": "string"
+                  },
+                  "formation": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Match updated successfully"
+          },
+          "404": {
+            "description": "Match not found"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a match",
+        "tags": [
+          "Matches"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Match ID to delete"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Match deleted successfully"
+          },
+          "404": {
+            "description": "Match not found"
+          }
+        }
+      }
+    },
+    "/api/v1/players": {
+      "get": {
+        "summary": "Retrieves a list of players",
+        "tags": [
+          "Players"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of Players",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Player"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new player",
+        "tags": [
+          "Players"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "position",
+                  "jerseyNumber"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Lionel Messi"
+                  },
+                  "position": {
+                    "type": "string",
+                    "example": "Forward"
+                  },
+                  "jerseyNumber": {
+                    "type": "string",
+                    "example": "10"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Player created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Player"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data"
+          }
+        }
+      }
+    },
+    "/api/v1/players/{id}": {
+      "put": {
+        "summary": "Update an existing player",
+        "tags": [
+          "Players"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Player ID to update"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "position": {
+                    "type": "string"
+                  },
+                  "jerseyNumber": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Player updated successfully"
+          },
+          "404": {
+            "description": "Player not found"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a player",
+        "tags": [
+          "Players"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Player ID to delete"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Player deleted successfully"
+          },
+          "404": {
+            "description": "Player not found"
+          }
+        }
+      }
+    },
+    "/api/v1/tournaments": {
+      "get": {
+        "summary": "Retrieves a list of tournaments",
+        "tags": [
+          "Tournaments"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of tournaments",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Tournament"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new tournament",
+        "tags": [
+          "Tournaments"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "tournamentName",
+                  "tournamentPosition",
+                  "upcomingTournamnet"
+                ],
+                "properties": {
+                  "tournamentName": {
+                    "type": "string",
+                    "example": "Champions Cup"
+                  },
+                  "tournamentPosition": {
+                    "type": "string",
+                    "example": "Final"
+                  },
+                  "upcomingTournamnet": {
+                    "type": "string",
+                    "example": "2025-06-10"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Tournament created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Tournament"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data"
+          }
+        }
+      }
+    },
+    "/api/v1/tournaments/{id}": {
+      "put": {
+        "summary": "Update an existing tournament",
+        "tags": [
+          "Tournaments"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Tournament ID to update"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "tournamentName": {
+                    "type": "string"
+                  },
+                  "tournamentPosition": {
+                    "type": "string"
+                  },
+                  "upcomingTournamnet": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tournament updated successfully"
+          },
+          "404": {
+            "description": "Tournament not found"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a tournament",
+        "tags": [
+          "Tournaments"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Tournament ID to delete"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tournament deleted successfully"
+          },
+          "404": {
+            "description": "Tournament not found"
+          }
+        }
+      }
+    }
+  },
+  "tags": []
+}
