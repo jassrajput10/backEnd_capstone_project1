@@ -6,7 +6,6 @@ import cors from "cors";
 
 dotenv.config();
 
-import setupSwagger from "../config/swagger";
 
 import playerRoutes from "./api/v1/routes/playerRoutes";
 import matchRoutes from "./api/v1/routes/matchRoutes";
@@ -21,6 +20,7 @@ import {
 } from "./api/v1/middleware/logger";
 import { getHelmetConfig } from "../config/helmetConfig";
 import { getCorsConfig } from "../config/corsConfig";
+import setupSwagger from "../config/swagger";
 
 
 // initialize the express application
@@ -82,6 +82,9 @@ app.use("/api/v1/tournaments", tournamentRoutes);
 
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/admin", adminRoutes);
+
+// Setup Swagger
+setupSwagger(app);
 
 app.use(errorHandler);
 
