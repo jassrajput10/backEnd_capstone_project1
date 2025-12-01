@@ -1,31 +1,43 @@
 import express, { Router } from "express";
-import * as playerController from "../controllers/playerController";
-import authenticate  from "../middleware/authenticate";
-import { playerSchemas } from "../validation/playerValidation";
 import { validateRequest } from "../middleware/validate";
+import { playerSchemas } from "../validation/playerValidation";
+import * as playerController from "../controllers/playerController";
+import authenticate from "../middleware/authenticate";
 import isAuthorized from "../middleware/authorize";
 import { AuthorizationOptions } from "../models/authorizationOptions";
 
 const router: Router = express.Router();
 
-//"/api/v1/players" prefixes all below rotes
+// "/api/v1/players" prefixes all below routes
+
 /**
  * @openapi
  * /api/v1/players:
  *   get:
- *     summary: Retrieve all players
+ *     summary: Retrieves a list of players
  *     tags: [Players]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: List of players retrieved successfully
+ *         description: A list of Players
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Player'
  */
-router.get("/", playerController.getAllPlayers);
+router.get("/", authenticate, isAuthorized({ hasRole: ["admin", "manager", "user"] } as AuthorizationOptions), playerController.getAllPlayers);
+
 /**
  * @openapi
  * /api/v1/players:
  *   post:
  *     summary: Create a new player
  *     tags: [Players]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -49,21 +61,29 @@ router.get("/", playerController.getAllPlayers);
  *     responses:
  *       201:
  *         description: Player created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Player'
+ *       400:
+ *         description: Invalid input data
  */
-
 router.post(
-    "/",
-    authenticate,
-    isAuthorized({ hasRole: ["admin", "manager"] } as AuthorizationOptions),
-    validateRequest(playerSchemas.create),
-    playerController.createPlayer
+  "/",
+  authenticate,
+  isAuthorized({ hasRole: ["admin", "manager"] } as AuthorizationOptions),
+  validateRequest(playerSchemas.create),
+  playerController.createPlayer
 );
+
 /**
  * @openapi
  * /api/v1/players/{id}:
  *   put:
  *     summary: Update an existing player
  *     tags: [Players]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -91,18 +111,21 @@ router.post(
  *         description: Player not found
  */
 router.put(
-    "/:id", 
-    authenticate,
-    isAuthorized({ hasRole: ["admin", "manager"] } as AuthorizationOptions),
-    validateRequest(playerSchemas.update),
-    playerController.updatePlayer
+  "/:id",
+  authenticate,
+  isAuthorized({ hasRole: ["admin", "manager"] } as AuthorizationOptions),
+  validateRequest(playerSchemas.update),
+  playerController.updatePlayer
 );
+
 /**
  * @openapi
  * /api/v1/players/{id}:
  *   delete:
  *     summary: Delete a player
  *     tags: [Players]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -117,9 +140,10 @@ router.put(
  *         description: Player not found
  */
 router.delete(
-    "/:id", 
-    authenticate,
-    isAuthorized({ hasRole: ["admin", "manager"] } as AuthorizationOptions),
-    playerController.deletePlayer);
+  "/:id",
+  authenticate,
+  isAuthorized({ hasRole: ["admin", "manager"] } as AuthorizationOptions),
+  playerController.deletePlayer
+);
 
 export default router;

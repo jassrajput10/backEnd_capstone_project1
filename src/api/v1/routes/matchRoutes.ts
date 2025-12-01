@@ -13,19 +13,30 @@ const router: Router = express.Router();
  * @openapi
  * /api/v1/matches:
  *   get:
- *     summary: Retrieve all matches
+ *     summary: Retrieves a list of matches
  *     tags: [Matches]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: List of all matches retrieved successfully
+ *         description: A list of matches
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Match'
  */
 router.get("/", matchController.getAllMatches);
+
 /**
  * @openapi
  * /api/v1/matches:
  *   post:
  *     summary: Create a new match
  *     tags: [Matches]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -40,15 +51,25 @@ router.get("/", matchController.getAllMatches);
  *             properties:
  *               currentGame:
  *                 type: string
+ *                 example: "Game A"
  *               upcomingMatch:
  *                 type: string
+ *                 example: "Game B"
  *               location:
  *                 type: string
+ *                 example: "Stadium 1"
  *               formation:
  *                 type: string
+ *                 example: "4-3-3"
  *     responses:
  *       201:
  *         description: Match created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Match'
+ *       400:
+ *         description: Invalid input data
  */
 router.post(
     "/", 
@@ -57,12 +78,15 @@ router.post(
     validateRequest(matchSchemas.create),
     matchController.createMatch
 );
+
 /**
  * @openapi
  * /api/v1/matches/{id}:
  *   put:
  *     summary: Update an existing match
  *     tags: [Matches]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - name: id
  *         in: path
@@ -98,12 +122,15 @@ router.put(
     validateRequest(matchSchemas.update),
     matchController.updateMatch
 );
+
 /**
  * @openapi
  * /api/v1/matches/{id}:
  *   delete:
  *     summary: Delete a match
  *     tags: [Matches]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - name: id
  *         in: path
