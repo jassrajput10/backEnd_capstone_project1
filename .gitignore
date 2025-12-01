@@ -2,5 +2,8 @@ node_modules/
 dist/
 .vscode/
 
+
 capstoneprojectbyjass-firebase-adminsdk-fbsvc-0ca445bf27.json
 .vscode/
+
+.env/

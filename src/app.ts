@@ -1,5 +1,9 @@
 // import the express application and type definition
 import express, { Express } from "express";
+import dotenv from "dotenv";
+
+dotenv.config();
+
 import setupSwagger from "../config/swagger";
 
 import playerRoutes from "./api/v1/routes/playerRoutes";
