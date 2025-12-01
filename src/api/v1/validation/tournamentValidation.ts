@@ -1,10 +1,48 @@
 import Joi from "joi";
+import { RequestSchema } from "../middleware/validate";
+
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     Tournament:
+ *       type: object
+ *       required:
+ *         - id
+ *         - tournamentName
+ *         - tournamentPosition
+ *         - upcomingTournamnet
+ *         - tournamentStart
+ *       properties:
+ *         id:
+ *           type: string
+ *           description: Unique identifier for the tournament
+ *           example: "tournament_001"
+ *         tournamentName:
+ *           type: string
+ *           description: Name of the tournament
+ *           example: "Champions Cup"
+ *         tournamentPosition:
+ *           type: string
+ *           description: Tournament ranking or position
+ *           example: "Semi-Final"
+ *         upcomingTournamnet:
+ *           type: string
+ *           description: The next scheduled tournament
+ *           example: "Winter Cup"
+ *         tournamentStart:
+ *           type: string
+ *           format: date-time
+ *           description: Date and time when the tournament begins
+ *           example: "2025-02-10T10:00:00.000Z"
+ */
+
 
 /**
  * Tournament schema organised by request type
  * This validation ensures that required fields are present and follow the given rules
  */
-export const tournamentSchemas = {
+export const tournamentSchemas: Record<string, RequestSchema> = {
     // POST /api/v1/tournaments - Create new tournament
     create: {
         body: Joi.object({

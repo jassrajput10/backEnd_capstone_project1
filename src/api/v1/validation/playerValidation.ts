@@ -1,10 +1,48 @@
 import Joi from "joi";
+import { RequestSchema } from "../middleware/validate";
+
+
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     Player:
+ *       type: object
+ *       required:
+ *         - id
+ *         - name
+ *         - position
+ *         - jerseyNumber
+ *         - registrationId
+ *       properties:
+ *         id:
+ *           type: string
+ *           description: Unique identifier for the player
+ *           example: "player_001"
+ *         name:
+ *           type: string
+ *           description: Name of the player
+ *           example: "Jas"
+ *         position:
+ *           type: string
+ *           description: The role or field position the player plays
+ *           example: "Forward"
+ *         jerseyNumber:
+ *           type: string
+ *           description: Jersey number assigned to the player
+ *           example: "10"
+ *         registrationId:
+ *           type: string
+ *           format: date-time
+ *           description: Date and time when the player was registered
+ *           example: "2025-01-01T12:00:00.000Z"
+ */
 
 /**
  * Player schema organised by request type
  * This validation ensures that required fields are present and follow the given rules
  */
-export const playerSchemas = {
+export const playerSchemas: Record<string, RequestSchema> = {
     // POST /api/v1/players - Create new player
     create: {
         body: Joi.object({
