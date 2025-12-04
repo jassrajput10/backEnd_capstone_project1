@@ -4,8 +4,9 @@ import morgan from "morgan";
 import setupSwagger from "../config/swagger";
 
 import playerRoutes from "./api/v1/routes/playerRoutes";
-import matchRoutes from "./api/v1/routes/matchRoutes"
-import tournamentRoutes from "./api/v1/routes/tournamentRoutes"
+import matchRoutes from "./api/v1/routes/matchRoutes";
+import tournamentRoutes from "./api/v1/routes/tournamentRoutes";
+import errorHandler from "./api/v1/middleware/errorHandler";
 
 // initialize the express application
 const app: Express = express();
@@ -55,5 +56,7 @@ app.use("/api/v1/players", playerRoutes);
 app.use("/api/v1/matches", matchRoutes);
 // "/api/v1/tournaments" will prefix all match routes
 app.use("/api/v1/tournaments", tournamentRoutes);
+
+app.use(errorHandler);
 
 export default app;
