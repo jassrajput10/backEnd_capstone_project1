@@ -31,7 +31,7 @@ export default [
       parser: tsParser,
       parserOptions: {
         project: "./tsconfig.json",
-        tsconfigRootDir: process.cwd(), // ✅ Fixed line for GitHub Actions
+        tsconfigRootDir: process.cwd(), 
       },
     },
     rules: {

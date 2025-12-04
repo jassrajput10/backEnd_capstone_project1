@@ -21,6 +21,7 @@ import {
 import { getHelmetConfig } from "../config/helmetConfig";
 import { getCorsConfig } from "../config/corsConfig";
 import setupSwagger from "../config/swagger";
+import limiter from "../src/api/v1/middleware/expressRatelimit"
 
 
 // initialize the express application
@@ -44,6 +45,7 @@ app.use(cors(getCorsConfig()));
 app.use(accessLogger);
 app.use(errorLogger);
 app.use(consoleLogger);
+app.use("/api", limiter);
 
 // Ensures incoming body is correctly parsed to JSON, otherwise req.body would be undefined
 app.use(express.json());
@@ -85,6 +87,8 @@ app.use("/api/v1/admin", adminRoutes);
 
 // Setup Swagger
 setupSwagger(app);
+
+
 
 app.use(errorHandler);
 
