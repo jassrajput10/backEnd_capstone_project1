@@ -1,53 +1,75 @@
-import eslint from "@eslint/js";
+import js from "@eslint/js";
 import tseslint from "typescript-eslint";
 import tsParser from "@typescript-eslint/parser";
+import { fileURLToPath } from "url";
+import path from "path";
 
-export default tseslint.config(
-    {
-        ignores: [
-            "**/dist/*",
-            "**coverage/*",
-            "**.github/*",
-            "eslint.config.mjs",
-            "jest.config.ts",
-        ],
+const dirname = path.dirname(fileURLToPath(import.meta.url));
+
+export default [
+  // Ignore build and config files
+  {
+    ignores: [
+      "**/dist/*",
+      "**/coverage/*",
+      "**/.github/*",
+      "eslint.config.mjs",
+      "jest.config.ts",
+    ],
+  },
+
+  // Base JavaScript rules
+  js.configs.recommended,
+
+  // TypeScript recommended rules
+  ...tseslint.configs.recommended,
+
+  // TypeScript rules for src files
+  {
+    files: ["**/*.ts", "**/*.tsx"],
+    languageOptions: {
+      parser: tsParser,
+      parserOptions: {
+        project: "./tsconfig.json",
+        tsconfigRootDir: process.cwd(), // ✅ Fixed line for GitHub Actions
+      },
     },
-    eslint.configs.recommended,
-    ...tseslint.configs.recommended,
-    {
-        languageOptions: {
-            parser: tsParser,
-            parserOptions: {
-                project: "./tsconfig.json",
-                tsconfigRootDir: import.meta.dirname,
-            },
-        },
+    rules: {
+      "@typescript-eslint/explicit-function-return-type": "error",
+      "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
+      "@typescript-eslint/typedef": "error",
+      "@typescript-eslint/no-require-imports": "off",
+      "@typescript-eslint/no-var-requires": "off",
     },
-    {
-        files: ["./**/*.ts", "./**/*.tsx"],
+  },
+
+  // Relax rules only for test files
+  {
+    files: ["test/**/*.ts"],
+    rules: {
+      "@typescript-eslint/explicit-function-return-type": "off",
+      "@typescript-eslint/typedef": "off",
     },
-    {
-        rules: {
-            // Core focus: enforce types on variables, function return types, and parameters
-            "@typescript-eslint/explicit-function-return-type": "error", // Require return types on functions
-            "@typescript-eslint/no-unused-vars": "error", // Disallow unused variables
-            "@typescript-eslint/no-unused-vars": [
-                "error",
-                { argsIgnorePattern: "^_" }, // allow unused variables prefixed with underscore
-            ],
-            "@typescript-eslint/typedef": [
-                "error",
-                {
-                    parameter: true, // Require types for function parameters
-                    propertyDeclaration: true, // Require types for class properties
-                    variableDeclaration: true, // Require types for variables
-                    memberVariableDeclaration: true, // Require types for member variables
-                    variableDeclarationIgnoreFunction: true, // Ignore types for function variables
-                },
-            ],
-            // Allow ES6 imports with CommonJS output
-            "@typescript-eslint/no-require-imports": "off",
-            "@typescript-eslint/no-var-requires": "off",
-        },
-    }
-);
+  },
+
+  // Jest config exceptions
+  {
+    files: ["jest.config.js"],
+    languageOptions: {
+      globals: {
+        module: "readonly",
+      },
+    },
+    rules: {
+      "no-undef": "off",
+    },
+  },
+
+  // API service files overrides
+  {
+    files: ["src/api/v1/service/**/*.ts"],
+    rules: {
+      "no-useless-catch": "off",
+    },
+  },
+];

@@ -22,7 +22,7 @@ Stores frequently accessed data in server memory instead of fetching from Fireba
 Why it's useful?
 When 100 fans check the same player's stats, without caching that's 100 Firebase reads (costs money + slow). With caching, it's 1 Firebase read and 99 instant memory reads (fast + cheap).
 How it works?
-hnpm install node-cache
+npm install node-cache
 
 First request: fetch from Firebase, store in cache
 Next requests: return from memory (super fast)
