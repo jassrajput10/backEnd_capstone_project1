@@ -1,0 +1,104 @@
+import express, { Router } from "express";
+import * as playerController from "../controllers/playerController";
+
+const router: Router = express.Router();
+
+//"/api/v1/players" prefixes all below rotes
+/**
+ * @openapi
+ * /api/v1/players:
+ *   get:
+ *     summary: Retrieve all players
+ *     tags: [Players]
+ *     responses:
+ *       200:
+ *         description: List of players retrieved successfully
+ */
+router.get("/", playerController.getAllPlayers);
+/**
+ * @openapi
+ * /api/v1/players:
+ *   post:
+ *     summary: Create a new player
+ *     tags: [Players]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - position
+ *               - jerseyNumber
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: "Lionel Messi"
+ *               position:
+ *                 type: string
+ *                 example: "Forward"
+ *               jerseyNumber:
+ *                 type: string
+ *                 example: "10"
+ *     responses:
+ *       201:
+ *         description: Player created successfully
+ */
+
+router.post("/", playerController.createPlayer);
+/**
+ * @openapi
+ * /api/v1/players/{id}:
+ *   put:
+ *     summary: Update an existing player
+ *     tags: [Players]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Player ID to update
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               position:
+ *                 type: string
+ *               jerseyNumber:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Player updated successfully
+ *       404:
+ *         description: Player not found
+ */
+router.put("/:id", playerController.updatePlayer);
+/**
+ * @openapi
+ * /api/v1/players/{id}:
+ *   delete:
+ *     summary: Delete a player
+ *     tags: [Players]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Player ID to delete
+ *     responses:
+ *       200:
+ *         description: Player deleted successfully
+ *       404:
+ *         description: Player not found
+ */
+router.delete("/:id", playerController.deletePlayer);
+
+export default router;
