@@ -3,6 +3,8 @@ import * as tournamentController from "../controllers/tournamentController";
 import authenticate  from "../middleware/authenticate";
 import { tournamentSchemas } from "../validation/tournamentValidation";
 import { validateRequest } from "../middleware/validate";
+import isAuthorized from "../middleware/authorize";
+import { AuthorizationOptions } from "../models/authorizationOptions";
 
 const router: Router = express.Router();
 
@@ -51,6 +53,7 @@ router.get("/", tournamentController.getAllTournaments);
 router.post(
     "/", 
     authenticate,
+    isAuthorized({ hasRole: ["admin", "manager"] } as AuthorizationOptions),
     validateRequest(tournamentSchemas.create),
     tournamentController.createTournament
 );
@@ -89,6 +92,7 @@ router.post(
 router.put(
     "/:id", 
     authenticate,
+    isAuthorized({ hasRole: ["admin", "manager"] } as AuthorizationOptions),
     validateRequest(tournamentSchemas.update),
     tournamentController.updateTournament);
 /**
@@ -113,6 +117,7 @@ router.put(
 router.delete(
     "/:id", 
     authenticate,
+    isAuthorized({ hasRole: ["admin", "manager"] } as AuthorizationOptions),
     tournamentController.deleteTournament
 );
 
