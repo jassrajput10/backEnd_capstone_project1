@@ -1,5 +1,9 @@
 import express, { Router } from "express";
 import * as playerController from "../controllers/playerController";
+import authenticate  from "../middleware/authenticate";
+import { playerSchemas } from "../validation/playerValidation";
+import { validateRequest } from "../middleware/validate";
+
 
 const router: Router = express.Router();
 
@@ -46,7 +50,12 @@ router.get("/", playerController.getAllPlayers);
  *         description: Player created successfully
  */
 
-router.post("/", playerController.createPlayer);
+router.post(
+    "/",
+    authenticate,
+    validateRequest(playerSchemas.create),
+    playerController.createPlayer
+);
 /**
  * @openapi
  * /api/v1/players/{id}:
@@ -79,7 +88,12 @@ router.post("/", playerController.createPlayer);
  *       404:
  *         description: Player not found
  */
-router.put("/:id", playerController.updatePlayer);
+router.put(
+    "/:id", 
+    authenticate,
+    validateRequest(playerSchemas.update),
+    playerController.updatePlayer
+);
 /**
  * @openapi
  * /api/v1/players/{id}:
@@ -99,6 +113,9 @@ router.put("/:id", playerController.updatePlayer);
  *       404:
  *         description: Player not found
  */
-router.delete("/:id", playerController.deletePlayer);
+router.delete(
+    "/:id", 
+    authenticate,
+    playerController.deletePlayer);
 
 export default router;
