@@ -1,37 +1,38 @@
 import js from "@eslint/js";
 import tseslint from "typescript-eslint";
 import tsParser from "@typescript-eslint/parser";
-import { fileURLToPath } from "url";
 import path from "path";
+import { fileURLToPath } from "url";
 
-const dirname = path.dirname(fileURLToPath(import.meta.url));
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default [
-  // Ignore build and config files
+
+
   {
     ignores: [
-      "**/dist/*",
-      "**/coverage/*",
-      "**/.github/*",
+      "dist/**",
+      "coverage/**",
+      ".github/**",
       "eslint.config.mjs",
+      "jest.config.js",
       "jest.config.ts",
     ],
   },
 
-  // Base JavaScript rules
+  
   js.configs.recommended,
 
-  // TypeScript recommended rules
+  
   ...tseslint.configs.recommended,
 
-  // TypeScript rules for src files
   {
     files: ["**/*.ts", "**/*.tsx"],
     languageOptions: {
       parser: tsParser,
       parserOptions: {
         project: "./tsconfig.json",
-        tsconfigRootDir: process.cwd(), // ✅ Fixed line for GitHub Actions
+        tsconfigRootDir: __dirname,
       },
     },
     rules: {
@@ -43,7 +44,7 @@ export default [
     },
   },
 
-  // Relax rules only for test files
+  
   {
     files: ["test/**/*.ts"],
     rules: {
@@ -52,12 +53,13 @@ export default [
     },
   },
 
-  // Jest config exceptions
+  
   {
-    files: ["jest.config.js"],
+    files: ["jest.config.js", "jest.config.ts"],
     languageOptions: {
       globals: {
         module: "readonly",
+        require: "readonly",
       },
     },
     rules: {
@@ -65,11 +67,12 @@ export default [
     },
   },
 
-  // API service files overrides
+  
   {
     files: ["src/api/v1/service/**/*.ts"],
     rules: {
       "no-useless-catch": "off",
     },
   },
+
 ];

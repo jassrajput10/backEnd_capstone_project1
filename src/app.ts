@@ -1,6 +1,11 @@
 // import the express application and type definition
 import express, { Express } from "express";
-import setupSwagger from "../config/swagger";
+import dotenv from "dotenv";
+import helmet from "helmet";
+import cors from "cors";
+
+dotenv.config();
+
 
 import playerRoutes from "./api/v1/routes/playerRoutes";
 import matchRoutes from "./api/v1/routes/matchRoutes";
@@ -13,6 +18,10 @@ import {
     errorLogger,
     consoleLogger,
 } from "./api/v1/middleware/logger";
+import { getHelmetConfig } from "../config/helmetConfig";
+import { getCorsConfig } from "../config/corsConfig";
+import setupSwagger from "../config/swagger";
+import limiter from "../src/api/v1/middleware/expressRatelimit"
 
 
 // initialize the express application
@@ -27,9 +36,16 @@ interface HealthCheckResponse {
     version: string;
 }
 // Middleware START
+// Apply basic Helmet security
+app.use(helmet());
+app.use(helmet(getHelmetConfig()));
+app.use(cors());
+app.use(cors(getCorsConfig()));
+
 app.use(accessLogger);
 app.use(errorLogger);
 app.use(consoleLogger);
+app.use("/api", limiter);
 
 // Ensures incoming body is correctly parsed to JSON, otherwise req.body would be undefined
 app.use(express.json());
@@ -68,6 +84,11 @@ app.use("/api/v1/tournaments", tournamentRoutes);
 
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/admin", adminRoutes);
+
+// Setup Swagger
+setupSwagger(app);
+
+
 
 app.use(errorHandler);
 

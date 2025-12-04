@@ -1,5 +1,8 @@
 import swaggerJsdoc from "swagger-jsdoc";
 
+const serverUrl: string =
+    process.env.SWAGGER_SERVER_URL || "http://localhost:3000/api/v1";
+    
 const swaggerOptions: swaggerJsdoc.Options = {
     definition: {
         openapi: "3.0.0",
@@ -11,7 +14,7 @@ const swaggerOptions: swaggerJsdoc.Options = {
         },
         servers: [
             {
-                url: "http://localhost:3000/api/v1",
+                url: serverUrl,
                 description: "Local server",
             },
         ],
@@ -30,7 +33,7 @@ const swaggerOptions: swaggerJsdoc.Options = {
             },
         ],
     },
-    apis: ["./src/api/v1/routes/*.ts", "./src/api/v1/validations/*.ts"], // Path to the API docs and schemas
+    apis: ["./src/api/v1/routes/*.ts", "./src/api/v1/validation/*.ts"], 
 };
 
 // Generate the Swagger spec

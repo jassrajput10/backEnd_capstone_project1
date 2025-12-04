@@ -13,19 +13,30 @@ const router: Router = express.Router();
  * @openapi
  * /api/v1/tournaments:
  *   get:
- *     summary: Retrieve all tournaments
+ *     summary: Retrieves a list of tournaments
  *     tags: [Tournaments]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: List of tournaments retrieved successfully
+ *         description: A list of tournaments
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Tournament'
  */
 router.get("/", tournamentController.getAllTournaments);
+
 /**
  * @openapi
  * /api/v1/tournaments:
  *   post:
  *     summary: Create a new tournament
  *     tags: [Tournaments]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -49,6 +60,12 @@ router.get("/", tournamentController.getAllTournaments);
  *     responses:
  *       201:
  *         description: Tournament created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Tournament'
+ *       400:
+ *         description: Invalid input data
  */
 router.post(
     "/", 
@@ -57,12 +74,15 @@ router.post(
     validateRequest(tournamentSchemas.create),
     tournamentController.createTournament
 );
+
 /**
  * @openapi
  * /api/v1/tournaments/{id}:
  *   put:
  *     summary: Update an existing tournament
  *     tags: [Tournaments]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -95,12 +115,15 @@ router.put(
     isAuthorized({ hasRole: ["admin", "manager"] } as AuthorizationOptions),
     validateRequest(tournamentSchemas.update),
     tournamentController.updateTournament);
+    
 /**
  * @openapi
  * /api/v1/tournaments/{id}:
  *   delete:
  *     summary: Delete a tournament
  *     tags: [Tournaments]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
