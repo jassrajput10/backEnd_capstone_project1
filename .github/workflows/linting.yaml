@@ -1,0 +1,49 @@
+name: TypeScript Lint
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+
+      # Step 3: Cache npm dependencies (optional, speeds up CI)
+      - name: Cache npm
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      # Step 4: Install ESLint + TypeScript + plugins
+      - name: Install dependencies
+        run: |
+          npm install --save-dev \
+            eslint \
+            @eslint/js \
+            typescript \
+            typescript-eslint \
+            @typescript-eslint/parser \
+            @typescript-eslint/eslint-plugin
+
+      # Step 5: Run ESLint (fail CI on lint errors)
+      - name: Run ESLint
+        run: |
+          npx eslint -c eslint.config.mjs "**/*.{ts,tsx}"
